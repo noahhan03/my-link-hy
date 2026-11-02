@@ -5,492 +5,528 @@ import { useState } from "react";
 
 interface Project {
   title: string;
-  description: string;
+  tagline: string;
+  category: string;
   tags: string[];
   image: string;
   link: string;
+  color: string;
 }
 
 interface QuickLink {
   title: string;
-  subtitle: string;
+  description: string;
+  tag: string;
   url: string;
   icon: string;
-  highlight?: boolean;
+  bgColor: string;
+  hoverColor: string;
 }
 
 const stats = [
-  { label: "프로젝트", value: "24+" },
-  { label: "코드 기여", value: "1.2k+" },
-  { label: "경력", value: "3년+" },
-  { label: "협업 만족도", value: "99%" },
+  { label: "SHIPPED PROJECTS", value: "28+", bg: "bg-amber-300" },
+  { label: "GITHUB COMMITS", value: "1.4K+", bg: "bg-emerald-300" },
+  { label: "YEARS EXP", value: "3+ YRS", bg: "bg-sky-300" },
+  { label: "COFFEE FUEL", value: "999+", bg: "bg-pink-300" },
 ];
 
-const techCategories = [
-  {
-    category: "Frontend",
-    items: [
-      { name: "Next.js", color: "from-zinc-900 to-zinc-700 text-white dark:from-zinc-100 dark:to-zinc-300 dark:text-zinc-900" },
-      { name: "React", color: "from-cyan-500 to-blue-500 text-white" },
-      { name: "TypeScript", color: "from-blue-600 to-indigo-600 text-white" },
-      { name: "Tailwind CSS", color: "from-teal-400 to-emerald-500 text-white" },
-    ],
-  },
-  {
-    category: "Backend & Cloud",
-    items: [
-      { name: "Node.js", color: "from-emerald-600 to-green-600 text-white" },
-      { name: "Supabase", color: "from-emerald-500 to-teal-600 text-white" },
-      { name: "PostgreSQL", color: "from-sky-600 to-blue-700 text-white" },
-    ],
-  },
-  {
-    category: "AI & Tools",
-    items: [
-      { name: "Vibe Coding 🚀", color: "from-purple-500 to-pink-500 text-white" },
-      { name: "Figma", color: "from-rose-500 to-amber-500 text-white" },
-      { name: "Git & GitHub", color: "from-zinc-700 to-zinc-900 text-white" },
-    ],
-  },
+const techArsenal = [
+  { name: "Next.js 16", tag: "CORE", bg: "bg-black text-white" },
+  { name: "React 19", tag: "UI", bg: "bg-cyan-300 text-black" },
+  { name: "TypeScript", tag: "LANG", bg: "bg-blue-400 text-white" },
+  { name: "Tailwind CSS", tag: "STYLE", bg: "bg-teal-300 text-black" },
+  { name: "Node.js", tag: "BACKEND", bg: "bg-lime-400 text-black" },
+  { name: "Supabase", tag: "DB", bg: "bg-emerald-300 text-black" },
+  { name: "Vibe Coding ⚡", tag: "SUPERPOWER", bg: "bg-yellow-400 text-black font-black" },
+  { name: "Claude & Gemini", tag: "AI PAIR", bg: "bg-violet-300 text-black" },
+  { name: "Figma", tag: "DESIGN", bg: "bg-rose-300 text-black" },
+  { name: "PostgreSQL", tag: "SQL", bg: "bg-sky-300 text-black" },
+  { name: "Git & GitHub", tag: "DEV", bg: "bg-orange-300 text-black" },
+  { name: "Cursor IDE", tag: "TOOL", bg: "bg-zinc-200 text-black" },
 ];
 
-const quickLinks: QuickLink[] = [
+const links: QuickLink[] = [
   {
-    title: "✨ 포트폴리오 웹사이트",
-    subtitle: "전체 프로젝트 및 인터랙티브 쇼케이스 둘러보기",
+    title: "PORTFOLIO ARCHIVE",
+    description: "인터랙티브 웹 프로젝트와 프로덕트 쇼케이스 전체보기",
+    tag: "FEATURED ★",
     url: "https://github.com",
-    icon: "🌐",
-    highlight: true,
+    icon: "🚀",
+    bgColor: "bg-yellow-300",
+    hoverColor: "hover:bg-yellow-200",
   },
   {
-    title: "📝 기술 블로그 (Tech Log)",
-    subtitle: "개발 트러블슈팅과 바이브 코딩 인사이트 기록",
+    title: "DEV LOG & INSIGHTS",
+    description: "프론트엔드 최적화와 AI 바이브 코딩 실전 노하우 기록",
+    tag: "NEW POSTS ✍️",
     url: "https://velog.io",
-    icon: "✍️",
+    icon: "📖",
+    bgColor: "bg-emerald-300",
+    hoverColor: "hover:bg-emerald-200",
   },
   {
-    title: "💻 GitHub 저장소",
-    subtitle: "오픈소스 기여 및 개인 프로젝트 소스코드",
+    title: "GITHUB REPOSITORIES",
+    description: "오픈소스 기여, 실험적인 토이 프로젝트 & 소스코드 저장소",
+    tag: "1.4K+ COMMITS",
     url: "https://github.com",
     icon: "🐙",
+    bgColor: "bg-sky-300",
+    hoverColor: "hover:bg-sky-200",
   },
   {
-    title: "☕ 30분 커피챗 신청하기",
-    subtitle: "사이드 프로젝트 협업, 기술 교류 언제든 환영해요",
+    title: "BOOK A COFFEE CHAT",
+    description: "가벼운 티타임, 협업 제안, 기술 수다는 언제든 환영합니다!",
+    tag: "OPEN NOW ☕",
     url: "mailto:contact@example.com",
     icon: "💬",
+    bgColor: "bg-pink-300",
+    hoverColor: "hover:bg-pink-200",
   },
 ];
 
-const featuredProjects: Project[] = [
+const projects: Project[] = [
   {
-    title: "MyLink - 스마트 프로필 허브",
-    description: "개인 브랜딩과 포트폴리오를 한 곳에 모은 반응형 링크 허브 서비스",
+    title: "MYLINK PROTOCOL",
+    tagline: "초고속 반응형 개인 브랜딩 & 인터랙티브 링크인바이오 허브",
+    category: "WEB APP",
     tags: ["Next.js", "Tailwind CSS", "TypeScript"],
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
     link: "https://github.com",
+    color: "bg-amber-300",
   },
   {
-    title: "AI 바이브 노트 (Vibe Notes)",
-    description: "생각을 음성과 키워드로 기록하면 AI가 요약하고 정리해주는 생산성 앱",
-    tags: ["React", "AI API", "Supabase"],
+    title: "AI VIBE ASSISTANT",
+    tagline: "실시간 음성과 텍스트로 아이디어를 기획서로 자동 완성하는 AI 도구",
+    category: "AI PRODUCT",
+    tags: ["React 19", "AI API", "Supabase"],
     image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
     link: "https://github.com",
+    color: "bg-purple-300",
   },
 ];
 
 export default function Home() {
   const [copied, setCopied] = useState(false);
+  const [claps, setClaps] = useState(42);
+  const [isClapping, setIsClapping] = useState(false);
 
-  const handleShare = async () => {
+  const handleCopyLink = async () => {
     try {
       if (typeof window !== "undefined") {
         await navigator.clipboard.writeText(window.location.href);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2500);
       }
     } catch {
       // fallback
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
     }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2200);
+  };
+
+  const handleClap = () => {
+    setClaps((prev) => prev + 1);
+    setIsClapping(true);
+    setTimeout(() => setIsClapping(false), 300);
   };
 
   return (
-    <div className="relative min-h-screen bg-slate-50 text-slate-800 antialiased selection:bg-indigo-500 selection:text-white dark:bg-[#0c0f17] dark:text-slate-100">
-      {/* 화려하고 은은한 오로라 배경 블러 효과 */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -top-40 left-1/2 h-[500px] w-[600px] -translate-x-1/2 rounded-full bg-gradient-to-tr from-indigo-500/20 via-sky-400/20 to-purple-500/20 blur-[120px] dark:from-indigo-600/15 dark:via-purple-600/15 dark:to-cyan-500/15" />
-        <div className="absolute top-1/3 -right-20 h-[380px] w-[380px] rounded-full bg-rose-400/10 blur-[100px] dark:bg-rose-600/10" />
-        <div className="absolute -bottom-20 -left-20 h-[400px] w-[400px] rounded-full bg-emerald-400/10 blur-[100px] dark:bg-emerald-600/10" />
+    <div className="min-h-screen bg-[#faf7f2] text-black font-sans pb-16 selection:bg-black selection:text-yellow-300">
+      
+      {/* 1. 상단 무한 롤링 마퀴 (Marquee Bar) */}
+      <div className="overflow-hidden border-b-4 border-black bg-yellow-300 py-2.5 font-mono text-xs sm:text-sm font-black tracking-wider uppercase">
+        <div className="animate-marquee whitespace-nowrap flex items-center">
+          <span className="mx-4">✦ VIBE CODER</span>
+          <span className="mx-4">✦ NEXT.JS & TYPESCRIPT SPECIALIST</span>
+          <span className="mx-4">✦ AVAILABLE FOR FREELANCE & COLLAB</span>
+          <span className="mx-4">✦ BUILDING HARD & FAST</span>
+          <span className="mx-4">✦ NEOBRUTALISM EDITION 2026</span>
+          <span className="mx-4">✦ OPEN FOR COFFEE CHAT ☕</span>
+          <span className="mx-4">✦ VIBE CODER</span>
+          <span className="mx-4">✦ NEXT.JS & TYPESCRIPT SPECIALIST</span>
+          <span className="mx-4">✦ AVAILABLE FOR FREELANCE & COLLAB</span>
+          <span className="mx-4">✦ BUILDING HARD & FAST</span>
+          <span className="mx-4">✦ NEOBRUTALISM EDITION 2026</span>
+          <span className="mx-4">✦ OPEN FOR COFFEE CHAT ☕</span>
+        </div>
       </div>
 
-      <div className="relative z-10 mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-        {/* 메인 프로필 카드 컨테이너 */}
-        <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white/80 shadow-2xl shadow-indigo-500/5 backdrop-blur-xl transition-all dark:border-slate-800/80 dark:bg-slate-900/70 dark:shadow-black/40">
+      <div className="mx-auto max-w-4xl px-4 pt-8 sm:px-6 sm:pt-12">
+
+        {/* 2. 네오 브루탈리즘 OS 창 스타일 메인 프로필 박스 */}
+        <section className="relative rounded-2xl border-4 border-black bg-white shadow-[8px_8px_0px_0px_#000] overflow-hidden">
           
-          {/* 커버 배너 이미지 & 오버레이 */}
-          <div className="relative h-44 w-full sm:h-56 md:h-64 overflow-hidden bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500">
+          {/* 레트로 창 타이틀 바 */}
+          <div className="flex items-center justify-between border-b-4 border-black bg-cyan-300 px-4 py-3 sm:px-6">
+            <div className="flex items-center gap-2">
+              <span className="h-4 w-4 rounded-full border-2 border-black bg-rose-400 inline-block shadow-[1px_1px_0px_0px_#000]" />
+              <span className="h-4 w-4 rounded-full border-2 border-black bg-amber-400 inline-block shadow-[1px_1px_0px_0px_#000]" />
+              <span className="h-4 w-4 rounded-full border-2 border-black bg-emerald-400 inline-block shadow-[1px_1px_0px_0px_#000]" />
+              <span className="ml-2 font-mono text-xs sm:text-sm font-black tracking-tight">
+                USER_PROFILE://HONG_GILDONG.EXE
+              </span>
+            </div>
+
+            {/* 링크 공유 버튼 */}
+            <button
+              onClick={handleCopyLink}
+              className="flex items-center gap-1.5 rounded-lg border-2 border-black bg-white px-3 py-1 font-mono text-xs font-black shadow-[2px_2px_0px_0px_#000] transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+            >
+              {copied ? (
+                <>
+                  <span className="text-emerald-600">✓</span>
+                  <span>COPIED!</span>
+                </>
+              ) : (
+                <>
+                  <span>🔗</span>
+                  <span>SHARE</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          {/* 배너 아트 영역 */}
+          <div className="relative h-48 sm:h-60 w-full border-b-4 border-black overflow-hidden bg-emerald-300">
             <Image
               src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1600&q=80"
               alt="Profile Cover Banner"
               fill
               priority
-              className="object-cover opacity-60 mix-blend-overlay transition-transform duration-700 hover:scale-105"
+              className="object-cover mix-blend-multiply opacity-80"
             />
-            {/* 그라데이션 페이드 오버레이 */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-
-            {/* 상단 액션 버튼 (공유 / 링크 복사) */}
-            <div className="absolute top-4 right-4 z-10">
-              <button
-                onClick={handleShare}
-                className="group flex items-center gap-2 rounded-full border border-white/20 bg-black/30 px-3.5 py-1.5 text-xs font-medium text-white backdrop-blur-md transition-all duration-200 hover:bg-white hover:text-slate-900 active:scale-95"
-                title="프로필 링크 복사하기"
-              >
-                {copied ? (
-                  <>
-                    <svg className="h-4 w-4 text-emerald-400 group-hover:text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span>복사 완료!</span>
-                  </>
-                ) : (
-                  <>
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                    </svg>
-                    <span>공유하기</span>
-                  </>
-                )}
-              </button>
+            {/* 배너 위 네오 브루탈리즘 스티커들 */}
+            <div className="absolute top-4 left-4 rotate-[-3deg]">
+              <span className="inline-block rounded-md border-3 border-black bg-yellow-300 px-3 py-1 font-mono text-xs sm:text-sm font-black shadow-[3px_3px_0px_0px_#000]">
+                ⚡ VERIFIED VIBE CODER
+              </span>
+            </div>
+            <div className="absolute top-4 right-4 rotate-[2deg] hidden sm:block">
+              <span className="inline-block rounded-md border-3 border-black bg-pink-400 px-3 py-1 font-mono text-xs font-black text-white shadow-[3px_3px_0px_0px_#000]">
+                ★ SEOUL, KR
+              </span>
             </div>
           </div>
 
-          {/* 프로필 콘텐츠 본문 */}
-          <div className="px-5 pb-8 pt-0 sm:px-8 sm:pb-12 md:px-12">
-            
-            {/* 상단 프로필 이미지 & 기본 정보 헤더 */}
-            <div className="relative -mt-16 sm:-mt-20 flex flex-col items-center text-center sm:flex-row sm:items-end sm:text-left sm:gap-6">
+          {/* 프로필 정보 영역 */}
+          <div className="p-5 sm:p-8">
+            <div className="relative -mt-20 sm:-mt-24 flex flex-col sm:flex-row items-center sm:items-end gap-5">
               
-              {/* 프로필 이미지 (아바타) */}
-              <div className="group relative h-28 w-28 sm:h-36 sm:w-36 shrink-0 rounded-full p-1.5 ring-4 ring-white shadow-xl dark:ring-slate-900 bg-gradient-to-tr from-indigo-500 to-purple-500">
-                <div className="relative h-full w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
-                  <Image
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80"
-                    alt="홍길동 프로필 사진"
-                    fill
-                    sizes="(max-width: 640px) 112px, 144px"
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    priority
-                  />
+              {/* 프로필 아바타 (두꺼운 테두리 + 하드 섀도우) */}
+              <div className="relative group shrink-0">
+                <div className="h-32 w-32 sm:h-36 sm:w-36 rounded-2xl border-4 border-black bg-yellow-300 p-1 shadow-[6px_6px_0px_0px_#000] overflow-hidden">
+                  <div className="relative h-full w-full rounded-xl overflow-hidden border-2 border-black bg-white">
+                    <Image
+                      src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80"
+                      alt="홍길동"
+                      fill
+                      sizes="144px"
+                      priority
+                      className="object-cover transition-transform duration-300 group-hover:scale-110"
+                    />
+                  </div>
                 </div>
-                {/* 실시간 활동 펄스 인디케이터 */}
-                <span
-                  className="absolute bottom-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-white ring-2 ring-white dark:bg-slate-900 dark:ring-slate-900 shadow-md"
-                  title="현재 활동 중 & 연락 환영"
-                >
-                  <span className="relative flex h-3.5 w-3.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-80" />
-                    <span className="relative inline-flex h-3.5 w-3.5 rounded-full bg-emerald-500" />
-                  </span>
+                {/* 온라인 라이브 상태 스티커 */}
+                <span className="absolute -bottom-2 -right-2 inline-flex items-center gap-1 rounded-full border-2 border-black bg-lime-400 px-2.5 py-0.5 font-mono text-[11px] font-black shadow-[2px_2px_0px_0px_#000]">
+                  <span className="h-2 w-2 rounded-full bg-black animate-ping" />
+                  ONLINE
                 </span>
               </div>
 
-              {/* 이름, 직함, 배지 */}
-              <div className="mt-4 sm:mt-0 flex-1">
-                <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
-                  <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl dark:text-white">
+              {/* 이름, 직함 & 응원 버튼 */}
+              <div className="flex-1 text-center sm:text-left">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                  <h1 className="text-3xl sm:text-4xl font-black tracking-tight uppercase">
                     홍길동
                   </h1>
-                  <span className="text-sm font-semibold text-slate-400 dark:text-slate-500">
-                    / Gildong Hong
+                  <span className="rounded-md border-2 border-black bg-purple-300 px-2 py-0.5 font-mono text-xs font-black shadow-[2px_2px_0px_0px_#000]">
+                    GILDONG HONG
                   </span>
-                  {/* 공식 인증 배지 */}
-                  <span className="inline-flex items-center text-blue-500" title="인증된 크리에이터">
-                    <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </span>
-
-                  {/* 협업 환영 상태 배지 */}
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-0.5 text-xs font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-600/20 dark:bg-emerald-950/40 dark:text-emerald-400 dark:ring-emerald-500/30">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    커피챗 & 협업 환영
+                  <span className="rounded-md border-2 border-black bg-emerald-300 px-2.5 py-0.5 font-mono text-xs font-black shadow-[2px_2px_0px_0px_#000]">
+                    COFFEECHAT: OK ☕
                   </span>
                 </div>
 
-                <p className="mt-1 text-sm font-medium text-indigo-600 sm:text-base dark:text-indigo-400">
-                  Frontend Engineer · Creative Vibe Coder
-                </p>
-
-                <div className="mt-2 flex flex-wrap items-center justify-center gap-y-1 gap-x-4 text-xs text-slate-500 sm:justify-start dark:text-slate-400">
-                  <span className="flex items-center gap-1">
-                    <svg className="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    Seoul, South Korea
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <svg className="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    경력 3년차
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <svg className="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    contact@example.com
-                  </span>
+                <div className="mt-2 inline-block rounded-lg border-2 border-black bg-yellow-300 px-3 py-1 font-mono text-sm font-black shadow-[3px_3px_0px_0px_#000]">
+                  FRONTEND DEVELOPER & CREATIVE BUILDER
                 </div>
               </div>
+
+              {/* 박수/응원 인터랙티브 스탬프 버튼 */}
+              <button
+                onClick={handleClap}
+                className={`group flex items-center gap-2 rounded-xl border-3 border-black bg-pink-400 px-4 py-2.5 font-mono text-xs font-black text-black shadow-[4px_4px_0px_0px_#000] transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#000] active:translate-x-1 active:translate-y-1 active:shadow-none ${
+                  isClapping ? "scale-95 bg-pink-500" : ""
+                }`}
+                title="클릭해서 응원 보내기!"
+              >
+                <span className="text-lg transition-transform group-hover:rotate-12">👏</span>
+                <span className="uppercase">VIBE BOOST</span>
+                <span className="rounded-md border border-black bg-white px-2 py-0.5 font-mono text-xs font-black">
+                  {claps}
+                </span>
+              </button>
             </div>
 
-            {/* 소개 문구 (About) */}
-            <div className="mt-6 rounded-2xl bg-slate-50/70 p-4 sm:p-5 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-800">
-              <p className="text-sm leading-relaxed text-slate-600 sm:text-base dark:text-slate-300">
-                💡 <span className="font-semibold text-slate-900 dark:text-white">아이디어를 직관적이고 감각적인 사용자 경험</span>으로 바꾸는 프론트엔드 엔지니어입니다.
-                복잡한 비즈니스 로직을 심플하게 풀어내며, AI 도구와 최신 웹 기술을 융합한 <span className="font-semibold text-indigo-600 dark:text-indigo-400">바이브 코딩(Vibe Coding)</span>으로 빠른 가치 검증과 높은 완성도를 지향합니다.
+            {/* 포스트잇 메모장 스타일 자기소개 박스 */}
+            <div className="mt-6 rounded-xl border-3 border-black bg-amber-100 p-4 sm:p-5 shadow-[4px_4px_0px_0px_#000]">
+              <div className="flex items-center gap-2 font-mono text-xs font-black text-amber-900 uppercase">
+                <span>📌</span>
+                <span>MANIFESTO / ABOUT ME</span>
+              </div>
+              <p className="mt-2 font-medium leading-relaxed text-sm sm:text-base text-black">
+                코드와 디자인의 경계를 허물며, <span className="bg-yellow-300 px-1 font-black border-b-2 border-black">아이디어를 직관적이고 강력한 현실 프로덕트</span>로 만듭니다. 복잡한 문제를 단순하게 정의하고, AI 도구와 모던 웹 스택을 융합한 <strong className="font-black underline decoration-pink-500 decoration-4">바이브 코딩(Vibe Coding)</strong>으로 세상에 없던 경험을 빠르게 배포합니다.
               </p>
             </div>
 
-            {/* 핵심 통계 바 (Stats Grid) */}
+            {/* 3. 네오 브루탈리즘 핵심 수치 (Stats Grid) */}
             <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
               {stats.map((stat) => (
                 <div
                   key={stat.label}
-                  className="group rounded-2xl border border-slate-200/60 bg-white/50 p-3.5 text-center transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-800/30 dark:hover:border-indigo-500/50"
+                  className={`rounded-xl border-3 border-black p-3.5 text-center shadow-[4px_4px_0px_0px_#000] transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#000] ${stat.bg}`}
                 >
-                  <div className="text-xl font-extrabold text-indigo-600 sm:text-2xl dark:text-indigo-400">
+                  <div className="text-2xl sm:text-3xl font-black tracking-tight">
                     {stat.value}
                   </div>
-                  <div className="mt-0.5 text-xs font-medium text-slate-500 dark:text-slate-400">
+                  <div className="mt-1 font-mono text-[10px] sm:text-xs font-black uppercase text-black/80">
                     {stat.label}
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* 메인 2단 반응형 레이아웃: [빠른 링크 허브] vs [기술 스택 & 대표 프로젝트] */}
-            <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-12">
-              
-              {/* 왼쪽 영역: 소셜 링크 & 핵심 바로가기 (7 cols) */}
-              <div className="lg:col-span-7 space-y-6">
-                <div>
-                  <h2 className="flex items-center gap-2 text-base font-bold text-slate-900 sm:text-lg dark:text-white">
-                    <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 text-xs font-black">
-                      ⚡
-                    </span>
-                    바로가기 링크
-                  </h2>
-                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                    원하시는 채널을 클릭하시면 바로 연결됩니다.
-                  </p>
-                </div>
+          </div>
+        </section>
 
-                <div className="space-y-3">
-                  {quickLinks.map((item) => (
-                    <a
-                      key={item.title}
-                      href={item.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`group relative flex items-center justify-between rounded-2xl border p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${
-                        item.highlight
-                          ? "border-indigo-400/60 bg-gradient-to-r from-indigo-50/90 via-purple-50/50 to-white shadow-md shadow-indigo-500/10 dark:border-indigo-500/50 dark:from-indigo-950/40 dark:via-purple-950/20 dark:to-slate-900"
-                          : "border-slate-200/80 bg-white/70 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-800/40 dark:hover:border-slate-700"
-                      }`}
-                    >
-                      <div className="flex items-center gap-3.5">
-                        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-xl shadow-xs border border-slate-200/60 dark:border-slate-700/60 dark:bg-slate-800">
-                          {item.icon}
-                        </span>
-                        <div>
-                          <div className="text-sm font-bold text-slate-900 transition-colors group-hover:text-indigo-600 dark:text-white dark:group-hover:text-indigo-400">
-                            {item.title}
-                          </div>
-                          <div className="text-xs text-slate-500 line-clamp-1 dark:text-slate-400">
-                            {item.subtitle}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-400 transition-all duration-200 group-hover:bg-indigo-600 group-hover:text-white group-hover:translate-x-1 dark:bg-slate-800 dark:text-slate-500 dark:group-hover:bg-indigo-500">
-                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    </a>
-                  ))}
-                </div>
-
-                {/* 소셜 아이콘 바 */}
-                <div className="pt-2">
-                  <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3">
-                    소셜 네트워크
-                  </div>
-                  <div className="flex flex-wrap gap-2.5">
-                    {[
-                      { name: "GitHub", href: "https://github.com", icon: "🐙" },
-                      { name: "LinkedIn", href: "https://linkedin.com", icon: "💼" },
-                      { name: "X (Twitter)", href: "https://x.com", icon: "🐦" },
-                      { name: "Instagram", href: "https://instagram.com", icon: "📷" },
-                    ].map((sns) => (
-                      <a
-                        key={sns.name}
-                        href={sns.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 rounded-xl border border-slate-200/80 bg-white/60 px-3 py-2 text-xs font-medium text-slate-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-300 hover:bg-white hover:text-indigo-600 hover:shadow-sm dark:border-slate-800 dark:bg-slate-800/40 dark:text-slate-300 dark:hover:border-indigo-500/50 dark:hover:bg-slate-800 dark:hover:text-white"
-                      >
-                        <span>{sns.icon}</span>
-                        <span>{sns.name}</span>
-                      </a>
-                    ))}
-                  </div>
-                </div>
+        {/* 4. 메인 콘텐츠 2열 그리드: [바로가기 링크 컬렉션] vs [테크 아스널] */}
+        <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-12">
+          
+          {/* 왼쪽: 핵심 링크 목록 (7 Cols) */}
+          <div className="lg:col-span-7 space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg border-2 border-black bg-pink-400 font-mono text-sm font-black shadow-[2px_2px_0px_0px_#000]">
+                  ⚡
+                </span>
+                <h2 className="text-xl font-black uppercase tracking-tight">
+                  FEATURED LINKS
+                </h2>
               </div>
-
-              {/* 오른쪽 영역: 기술 스택 (5 cols) */}
-              <div className="lg:col-span-5 space-y-6">
-                <div>
-                  <h2 className="flex items-center gap-2 text-base font-bold text-slate-900 sm:text-lg dark:text-white">
-                    <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-purple-100 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400 text-xs font-black">
-                      🛠️
-                    </span>
-                    기술 스택 & 도구
-                  </h2>
-                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                    실무 및 프로젝트에서 적극 활용하는 스택입니다.
-                  </p>
-                </div>
-
-                <div className="space-y-4 rounded-2xl border border-slate-200/70 bg-white/40 p-4 dark:border-slate-800 dark:bg-slate-900/40">
-                  {techCategories.map((group) => (
-                    <div key={group.category} className="space-y-2">
-                      <div className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                        {group.category}
-                      </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {group.items.map((tech) => (
-                          <span
-                            key={tech.name}
-                            className={`inline-flex items-center rounded-lg bg-gradient-to-r px-2.5 py-1 text-xs font-medium shadow-xs transition-transform duration-200 hover:scale-105 ${tech.color}`}
-                          >
-                            {tech.name}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* 커피챗 배너 / 빠른 문의 */}
-                <div className="rounded-2xl border border-indigo-200/80 bg-gradient-to-br from-indigo-50/70 to-purple-50/70 p-5 dark:border-indigo-900/50 dark:from-indigo-950/30 dark:to-purple-950/30">
-                  <div className="flex items-start gap-3">
-                    <span className="text-2xl">☕</span>
-                    <div>
-                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                        언제든 편하게 연락주세요!
-                      </h3>
-                      <p className="mt-1 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                        새로운 프로젝트 제안이나 기술 수다, 커피챗 요청은 언제든지 환영합니다.
-                      </p>
-                      <a
-                        href="mailto:contact@example.com"
-                        className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-md shadow-indigo-600/20 transition-all hover:bg-indigo-700 active:scale-95"
-                      >
-                        이메일 보내기
-                        <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
+              <span className="font-mono text-xs font-bold text-neutral-500">
+                CLICK TO VISIT ↗
+              </span>
             </div>
 
-            {/* 대표 프로젝트 쇼케이스 섹션 (하단 반응형 2열 카드 그리드) */}
-            <div className="mt-12 border-t border-slate-200/70 pt-8 dark:border-slate-800">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="flex items-center gap-2 text-base font-bold text-slate-900 sm:text-lg dark:text-white">
-                    <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400 text-xs font-black">
-                      🚀
-                    </span>
-                    대표 프로젝트
-                  </h2>
-                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                    최근에 몰입하여 제작한 주요 작업물입니다.
-                  </p>
-                </div>
-              </div>
+            <div className="space-y-3.5">
+              {links.map((link) => (
+                <a
+                  key={link.title}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`group block rounded-xl border-3 border-black p-4 shadow-[5px_5px_0px_0px_#000] transition-all duration-150 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_#000] active:translate-x-1 active:translate-y-1 active:shadow-[1px_1px_0px_0px_#000] ${link.bgColor} ${link.hoverColor}`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 border-black bg-white text-xl shadow-[2px_2px_0px_0px_#000]">
+                        {link.icon}
+                      </span>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-black text-sm sm:text-base tracking-tight">
+                            {link.title}
+                          </h3>
+                          <span className="rounded-md border border-black bg-black px-1.5 py-0.2 font-mono text-[10px] font-bold text-white">
+                            {link.tag}
+                          </span>
+                        </div>
+                        <p className="mt-0.5 text-xs font-semibold text-neutral-800 line-clamp-1">
+                          {link.description}
+                        </p>
+                      </div>
+                    </div>
 
-              <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
-                {featuredProjects.map((project) => (
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000] transition-transform group-hover:rotate-45">
+                      <span className="font-mono text-base font-black">↗</span>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+
+            {/* 소셜 네트워크 빠른 링크 뱃지 */}
+            <div className="rounded-xl border-3 border-black bg-white p-4 shadow-[4px_4px_0px_0px_#000]">
+              <div className="font-mono text-xs font-black uppercase text-neutral-600 mb-3">
+                🌐 CONNECT ON SOCIALS
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { name: "GITHUB", icon: "🐙", url: "https://github.com", bg: "bg-slate-200" },
+                  { name: "LINKEDIN", icon: "💼", url: "https://linkedin.com", bg: "bg-sky-200" },
+                  { name: "X (TWITTER)", icon: "🐦", url: "https://x.com", bg: "bg-emerald-200" },
+                  { name: "INSTAGRAM", icon: "📸", url: "https://instagram.com", bg: "bg-pink-200" },
+                ].map((sns) => (
                   <a
-                    key={project.title}
-                    href={project.link}
+                    key={sns.name}
+                    href={sns.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white/70 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-indigo-300 hover:shadow-xl dark:border-slate-800 dark:bg-slate-800/40 dark:hover:border-indigo-500/50"
+                    className={`inline-flex items-center gap-1.5 rounded-lg border-2 border-black px-3 py-1.5 font-mono text-xs font-black shadow-[2px_2px_0px_0px_#000] transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${sns.bg}`}
                   >
-                    <div className="relative h-44 w-full overflow-hidden bg-slate-100 dark:bg-slate-900">
-                      <Image
-                        src={project.image}
-                        alt={project.title}
-                        fill
-                        sizes="(max-width: 640px) 100vw, 50vw"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                      <div className="absolute bottom-3 right-3 rounded-full bg-white/90 p-2 text-slate-900 shadow-md opacity-0 transition-all duration-300 group-hover:opacity-100 dark:bg-slate-900 dark:text-white">
-                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                        </svg>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-1 flex-col p-5">
-                      <h3 className="text-base font-bold text-slate-900 transition-colors group-hover:text-indigo-600 dark:text-white dark:group-hover:text-indigo-400">
-                        {project.title}
-                      </h3>
-                      <p className="mt-1.5 flex-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
-                        {project.description}
-                      </p>
-
-                      <div className="mt-4 flex flex-wrap gap-1.5">
-                        {project.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600 dark:bg-slate-700/60 dark:text-slate-300"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
+                    <span>{sns.icon}</span>
+                    <span>{sns.name}</span>
                   </a>
                 ))}
               </div>
             </div>
+          </div>
 
-            {/* 하단 푸터 */}
-            <footer className="mt-12 text-center text-xs text-slate-400 dark:text-slate-600">
-              <p>© 2026 Gildong Hong. All rights reserved.</p>
-              <p className="mt-1">Designed with Next.js, Tailwind CSS & Vibe Coding ✨</p>
-            </footer>
+          {/* 오른쪽: 기술 스택 & 문의 박스 (5 Cols) */}
+          <div className="lg:col-span-5 space-y-6">
+            
+            {/* 테크 아스널 블록 */}
+            <div className="rounded-2xl border-4 border-black bg-white p-5 shadow-[6px_6px_0px_0px_#000]">
+              <div className="flex items-center justify-between border-b-2 border-black pb-3 mb-4">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg border-2 border-black bg-yellow-300 font-mono text-xs font-black shadow-[2px_2px_0px_0px_#000]">
+                    🛠️
+                  </span>
+                  <h3 className="font-black text-base uppercase tracking-tight">
+                    TECH ARSENAL
+                  </h3>
+                </div>
+                <span className="font-mono text-xs font-bold bg-black text-white px-2 py-0.5 rounded">
+                  STACK 2026
+                </span>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {techArsenal.map((tech) => (
+                  <span
+                    key={tech.name}
+                    className={`inline-flex items-center gap-1.5 rounded-lg border-2 border-black px-2.5 py-1 text-xs font-black shadow-[2px_2px_0px_0px_#000] transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_#000] ${tech.bg}`}
+                  >
+                    <span>{tech.name}</span>
+                    <span className="opacity-70 text-[9px] uppercase font-mono">
+                      #{tech.tag}
+                    </span>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* 빠른 협업 문의 배너 (Hot Pink / Yellow 네오 브루탈 박스) */}
+            <div className="rounded-2xl border-4 border-black bg-rose-300 p-5 shadow-[6px_6px_0px_0px_#000] relative overflow-hidden">
+              <div className="absolute -right-6 -bottom-6 text-7xl opacity-30 select-none font-black pointer-events-none">
+                ✉️
+              </div>
+              <div className="relative z-10">
+                <span className="inline-block rounded-md border-2 border-black bg-white px-2 py-0.5 font-mono text-[11px] font-black shadow-[2px_2px_0px_0px_#000] mb-2">
+                  GET IN TOUCH!
+                </span>
+                <h3 className="text-xl font-black uppercase tracking-tight">
+                  LET&apos;S BUILD SOMETHING AWESOME TOGETHER
+                </h3>
+                <p className="mt-1.5 font-medium text-xs leading-relaxed text-black/90">
+                  사이드 프로젝트, 프리랜서 외주, 기술 협업, 가벼운 커피챗 무엇이든 편하게 보내주세요.
+                </p>
+                <a
+                  href="mailto:contact@example.com"
+                  className="mt-4 inline-flex items-center gap-2 rounded-xl border-3 border-black bg-yellow-300 px-4 py-2 font-mono text-xs font-black shadow-[3px_3px_0px_0px_#000] transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_#000] active:translate-x-1 active:translate-y-1 active:shadow-none"
+                >
+                  <span>SEND AN EMAIL</span>
+                  <span>→</span>
+                </a>
+              </div>
+            </div>
 
           </div>
         </div>
+
+        {/* 5. 대표 프로젝트 쇼케이스 (Neobrutalism Project Cards) */}
+        <section className="mt-14">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg border-2 border-black bg-purple-400 font-mono text-sm font-black shadow-[2px_2px_0px_0px_#000]">
+                📁
+              </span>
+              <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight">
+                FEATURED BUILDS
+              </h2>
+            </div>
+            <span className="font-mono text-xs font-bold bg-white border-2 border-black px-2.5 py-1 rounded-md shadow-[2px_2px_0px_0px_#000]">
+              CASE STUDIES
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            {projects.map((item) => (
+              <a
+                key={item.title}
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col rounded-2xl border-4 border-black bg-white shadow-[6px_6px_0px_0px_#000] transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_#000]"
+              >
+                {/* 윈도우 창 헤더 */}
+                <div className={`flex items-center justify-between border-b-3 border-black px-3.5 py-2 ${item.color}`}>
+                  <span className="font-mono text-xs font-black">
+                    {item.category}
+                  </span>
+                  <div className="flex gap-1.5">
+                    <span className="h-3 w-3 rounded-full border border-black bg-white" />
+                    <span className="h-3 w-3 rounded-full border border-black bg-black" />
+                  </div>
+                </div>
+
+                {/* 이미지 영역 */}
+                <div className="relative h-48 w-full border-b-3 border-black bg-neutral-100 overflow-hidden">
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 50vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute top-2 right-2 rounded-md border-2 border-black bg-yellow-300 px-2 py-0.5 font-mono text-[10px] font-black shadow-[2px_2px_0px_0px_#000]">
+                    LIVE DEMO ↗
+                  </div>
+                </div>
+
+                {/* 프로젝트 내용 본문 */}
+                <div className="flex flex-1 flex-col p-5">
+                  <h3 className="text-lg font-black tracking-tight uppercase group-hover:underline decoration-black decoration-2">
+                    {item.title}
+                  </h3>
+                  <p className="mt-1.5 flex-1 text-xs font-medium leading-relaxed text-neutral-700">
+                    {item.tagline}
+                  </p>
+
+                  <div className="mt-4 flex flex-wrap gap-1.5 pt-3 border-t-2 border-black/10">
+                    {item.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-md border border-black bg-neutral-100 px-2 py-0.5 font-mono text-[11px] font-bold"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        {/* 6. 레트로 네오 브루탈리즘 푸터 */}
+        <footer className="mt-14 rounded-xl border-3 border-black bg-yellow-300 p-6 text-center shadow-[4px_4px_0px_0px_#000]">
+          <div className="font-mono text-xs sm:text-sm font-black uppercase">
+            ⚡ DESIGNED & BUILT WITH NEXT.JS, TAILWIND & VIBE CODING ⚡
+          </div>
+          <p className="mt-1 font-mono text-xs text-neutral-800">
+            © 2026 HONG GILDONG. NO BORING DESIGNS ALLOWED.
+          </p>
+        </footer>
+
       </div>
     </div>
   );
